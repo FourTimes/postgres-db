@@ -23,8 +23,8 @@ services:
       - "8444:8444"   # Admin API (SSL)
     environment:
       KONG_DATABASE:         postgres
-      KONG_PG_HOST:          kong-db
-      KONG_PG_PORT:          5432
+      KONG_PG_HOST:          10.4.0.2
+      KONG_PG_PORT:          15432
       KONG_PG_DATABASE:      api-gw
       KONG_PG_USER:          kong
       KONG_PG_PASSWORD:      kong
