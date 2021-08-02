@@ -1,0 +1,37 @@
+version: '3.5'
+services:
+  keycloak-db:
+    image: postgres:11-alpine
+    volumes: 
+      - keycloak-datastore:/var/lib/postgresql/data
+    networks:
+      - keycloak-net
+    ports:
+      - "25432:5432"
+    environment:
+      POSTGRES_DB:       keycloak
+      POSTGRES_USER:     keycloak
+      POSTGRES_PASSWORD: password
+
+  kong-db:
+    image: postgres:11-alpine
+    volumes:
+      - kong-datastore:/var/lib/postgresql/data
+    networks:
+      - kong-net
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_DB:       api-gw
+      POSTGRES_USER:     kong
+      POSTGRES_PASSWORD: kong
+
+networks:
+  kong-net:
+    driver: bridge
+  keycloak-net:
+    driver: bridge
+    
+volumes:
+  kong-datastore:
+  keycloak-datastore:
