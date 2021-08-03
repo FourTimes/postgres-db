@@ -1,0 +1,88 @@
+version: "3.5"
+services:
+  otp-service:
+    image: otp-service
+    container_name: otp-service_container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9030:9030"
+    environment:
+      POSTGRES_DB:       xxxx
+      POSTGRES_USER:     xxxx
+    networks:
+      - backend-net
+    restart: unless-stopped
+
+  order-management-service:
+    image: ordermanagement-service
+    container_name: order-management-service_container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9010:9010"
+    environment:
+      POSTGRES_DB:       xxxx
+      POSTGRES_USER:     xxxx
+    depends_on:
+      - otp-service
+    networks:
+      - backend-net
+    restart: unless-stopped
+
+  payroll-provider-service:
+    image: payroll-provider-service
+    container_name: payroll-provider-service-container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      POSTGRES_DB:       xxxx
+      POSTGRES_USER:     xxxx
+    depends_on:
+      - order-management-service
+    networks:
+      - backend-net
+    restart: unless-stopped
+
+  verification-link-service:
+    image: verification-link-service
+    container_name: verification-link-service_container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9040:9040"
+    environment:
+      POSTGRES_DB:       xxxx
+      POSTGRES_USER:     xxxx
+    depends_on:
+      - payroll-provider-service
+    networks:
+      - backend-net
+    restart: unless-stopped
+
+  notification-service:
+    image: notification-service
+    container_name: notification-service_container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9020:9020"
+    depends_on:
+      - verification-link-service
+    environment:
+      POSTGRES_DB:       xxxx
+      POSTGRES_USER:     xxxx
+    networks:
+      - backend-net
+    restart: unless-stopped
+
+networks:
+  backend-net:
+    driver: bridge
